@@ -899,7 +899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 10
   dashDistance: 30
-  dashCooldown: 1
+  dashCooldown: 0.5
 --- !u!61 &1085018189
 BoxCollider2D:
   m_ObjectHideFlags: 0
