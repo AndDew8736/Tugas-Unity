@@ -24,8 +24,12 @@ public class ProjectileBehaviour : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    private void OnCollision(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D other)
     {
-        Destroy(gameObject);
+        if (other.gameObject.tag == "mob")
+        {
+            Destroy(gameObject);
+        }
+        // Destroy(gameObject);
     }
 }
