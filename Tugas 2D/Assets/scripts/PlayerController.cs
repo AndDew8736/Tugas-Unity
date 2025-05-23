@@ -35,14 +35,11 @@ public class PlayerController : MonoBehaviour
         }
         moveInput = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-
-        if (moveInput > 0f)
+        transform.position += new Vector3(moveInput, 0, 0) * Time.deltaTime * moveSpeed;
+        
+        if (!Mathf.Approximately(0, moveInput))
         {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
-        else if (moveInput < 0f)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.rotation = moveInput > 0 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
         }
 
         currentDashCooldown -= Time.deltaTime;

@@ -17,7 +17,7 @@ public class ProjectileBehaviour : MonoBehaviour
     void Update()
     {
         float direction = transform.localScale.x > 0 ? 1f : -1f;
-        transform.position += transform.right * Time.deltaTime * speed * direction;
+        transform.position += -transform.right * Time.deltaTime * speed * direction;
         graceDuration -= Time.deltaTime;
         if(graceDuration <= 0)
         {
