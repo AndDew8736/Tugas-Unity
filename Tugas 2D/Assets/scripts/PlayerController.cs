@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
     private float moveInput;
@@ -13,29 +13,48 @@ public class NewBehaviourScript : MonoBehaviour
     private float dashingTime = 0.2f;
     private bool canDash = true;
     private bool isDashing;
+    public float fireballCooldown;
+    private float currentFbCooldown;
 
-
+    public GameObject ProjectilePrefab;
+    public Transform LaunchOffset;
     // Start is called before the first frame update
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         currentDashCooldown = dashCooldown;
+        currentFbCooldown = fireballCooldown;
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if(isDashing)
+        if (isDashing)
         {
-             return;
+            return;
         }
         moveInput = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
+        if (moveInput > 0f)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else if (moveInput < 0f)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+
         currentDashCooldown -= Time.deltaTime;
-        if(Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
             StartCoroutine(Dash());
+        }
+        
+        if (Input.GetKeyDown(KeyCode.E) && currentFbCooldown <= 0)
+        {
+            Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
+            currentFbCooldown = fireballCooldown;
         }
     }
 
