@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    //i should have separated these scripts...
     public float moveSpeed = 5f;
     private float moveInput;
+    public float jumpForce;
+
     private Rigidbody2D rb;
     public float dashDistance;
     private float currentDashCooldown;
@@ -18,10 +22,15 @@ public class PlayerController : MonoBehaviour
 
     public GameObject ProjectilePrefab;
     public Transform LaunchOffset;
-    // Start is called before the first frame update
+    private Animator anim;
+
+    //States and anims
+    private enum State { idle, running, jumping, falling};
+    private State state = State.idle;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         currentDashCooldown = dashCooldown;
         currentFbCooldown = fireballCooldown;
     }
@@ -33,29 +42,68 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+        Movement();
+        DashCheck();
+        Fireball();
+        AnimState();
+        anim.SetInteger("state", (int)state);
+    }
+    private void Movement()
+    {
+        //Movement
         moveInput = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
         transform.position += new Vector3(moveInput, 0, 0) * Time.deltaTime * moveSpeed;
-        
-        if (!Mathf.Approximately(0, moveInput))
+
+        //Jumping
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
-            transform.rotation = moveInput > 0 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            state = State.jumping;
         }
 
+        //Rotation
+        if (!Mathf.Approximately(0, moveInput))
+        {
+            transform.rotation = moveInput < 0 ? Quaternion.Euler(0, 180, 0) : Quaternion.identity;
+        }
+
+        //Dashing
         currentDashCooldown -= Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
             StartCoroutine(Dash());
         }
-        
-        if (Input.GetKeyDown(KeyCode.E) && currentFbCooldown <= 0)
+    }
+    
+    private bool isGrounded()//groundcheck
+    {
+        return transform.Find("GroundCheck").GetComponent<GroundCheck>().isGrounded;
+    }
+
+    //cherry function
+    [SerializeField] private int Cherries = 0;
+    [SerializeField] private UnityEngine.UI.Text CherryNum;
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Collectible")
         {
-            Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
-            currentFbCooldown = fireballCooldown;
+            Destroy(collision.gameObject);
+            Cherries += 1;
+            CherryNum.text = Cherries.ToString();
         }
     }
 
-    private IEnumerator Dash()
+    private void DashCheck()//checks for dashing
+    {
+        currentDashCooldown -= Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+        {
+            StartCoroutine(Dash());
+        }
+    }
+
+    private IEnumerator Dash() //dash function
     {
         canDash = false;
         isDashing = true;
@@ -67,6 +115,45 @@ public class PlayerController : MonoBehaviour
         isDashing = false;
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
+    }
+
+    private void Fireball()//fireball function
+    {
+         if (Input.GetKeyDown(KeyCode.E) && currentFbCooldown <= 0)
+        {
+            Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
+            currentFbCooldown = fireballCooldown;
+        }
+        currentFbCooldown -= Time.deltaTime;
+    }
+
+    private void AnimState()//changes animation states of player
+    {
+        if (state == State.jumping)
+        {
+            //if jumping
+            if (rb.velocity.y < .1f)
+            {
+                state = State.falling;
+            }
+        }
+        else if (state == State.falling)
+        {
+            if (isGrounded())
+            {
+                state = State.idle;
+            }
+        }
+        else if (Mathf.Abs(rb.velocity.x) > 2f)
+        {
+            //if movement greater than e, moving
+            state = State.running;
+        }
+
+        else
+        {
+            state = State.idle;
+        }
     }
 }
 
