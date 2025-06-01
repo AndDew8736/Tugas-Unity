@@ -33,17 +33,16 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (state != State.damaged) //makes it so u  cant move when damaged
-        {
-            Movement();
-        }
         if (isDashing)
         {
             return;
         }
+        if (state != State.damaged) //makes it so u  cant move when damaged
+        {
+            Movement();
+        }
+     
         
-
-       
         DashCheck();
         AnimState();
         anim.SetInteger("state", (int)state);
