@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7301025209985635492}
   m_Layer: 0
   m_Name: GroundCheck
-  m_TagString: Untagged
+  m_TagString: GroundCheck
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1191285392984974406}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.13, y: -1.098, z: 1.0917863}
+  m_LocalPosition: {x: -0.13, y: -1.2, z: 1.0917863}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -93,7 +93,7 @@ MonoBehaviour:
   platformLayerMask:
     serializedVersion: 2
     m_Bits: 8
-  isGrounded: 0
+  isGrounded: 1
 --- !u!1 &1403203943716083529
 GameObject:
   m_ObjectHideFlags: 0
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 1343928559479802275}
   m_Layer: 0
   m_Name: Offset
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 7575042015886630105}
   - component: {fileID: 122375262148828931}
   - component: {fileID: 1945820532403836123}
+  - component: {fileID: 7398779973956101897}
   - component: {fileID: 7579522256403927156}
   m_Layer: 0
   m_Name: Player
@@ -155,7 +156,7 @@ Transform:
   m_GameObject: {fileID: 2927858461949087283}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -21.779999, y: -5.88, z: 0.016217463}
+  m_LocalPosition: {x: -21.779999, y: -5, z: 0.016217463}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -303,8 +304,22 @@ MonoBehaviour:
   jumpForce: 14
   dashDistance: 30
   dashCooldown: 1
+  Cherries: 0
+  CherryNum: {fileID: 0}
+--- !u!114 &7398779973956101897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2927858461949087283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80cba6d28c876154487cc433a492a722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   fireballCooldown: 0.2
-  ProjectilePrefab: {fileID: 7485961081851415079, guid: b1fee3b28508d0249a95dd3339373c55, type: 3}
+  ProjectilePrefab: {fileID: 5084744430982503662, guid: 81e18e3011bfdbc429530185ee36deea, type: 3}
   LaunchOffset: {fileID: 1343928559479802275}
 --- !u!95 &7579522256403927156
 Animator:

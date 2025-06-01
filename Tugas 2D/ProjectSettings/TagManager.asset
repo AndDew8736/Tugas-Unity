@@ -5,8 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
-  - mob
   - Collectible
+  - Mob
+  - Projectile
+  - GroundCheck
   layers:
   - Default
   - TransparentFX

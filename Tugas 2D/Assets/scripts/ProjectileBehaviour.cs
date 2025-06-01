@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ProjectileBehaviour : MonoBehaviour
@@ -8,10 +9,6 @@ public class ProjectileBehaviour : MonoBehaviour
     public float damage;
     public float graceDuration;
     // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()
@@ -24,8 +21,13 @@ public class ProjectileBehaviour : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D other)
     {
+        IDamageable iDamageable = other.gameObject.GetComponent<IDamageable>();
+        if (iDamageable != null)
+        {
+            iDamageable.Damage(damage);
+        }
         Destroy(gameObject);
     }
 }

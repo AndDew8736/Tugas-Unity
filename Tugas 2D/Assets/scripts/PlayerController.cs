@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,34 +18,33 @@ public class PlayerController : MonoBehaviour
     private float dashingTime = 0.2f;
     private bool canDash = true;
     private bool isDashing;
-    public float fireballCooldown;
-    private float currentFbCooldown;
-
-    public GameObject ProjectilePrefab;
-    public Transform LaunchOffset;
     private Animator anim;
 
     //States and anims
-    private enum State { idle, running, jumping, falling};
+    private enum State { idle, running, jumping, falling, damaged};
     private State state = State.idle;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         currentDashCooldown = dashCooldown;
-        currentFbCooldown = fireballCooldown;
     }
 
     // Update is called once per frame
     private void Update()
     {
+        if (state != State.damaged) //makes it so u  cant move when damaged
+        {
+            Movement();
+        }
         if (isDashing)
         {
             return;
         }
-        Movement();
+        
+
+       
         DashCheck();
-        Fireball();
         AnimState();
         anim.SetInteger("state", (int)state);
     }
@@ -58,8 +58,7 @@ public class PlayerController : MonoBehaviour
         //Jumping
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            state = State.jumping;
+            Jump();
         }
 
         //Rotation
@@ -75,7 +74,11 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(Dash());
         }
     }
-    
+    private void Jump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        state = State.jumping;
+    }
     private bool isGrounded()//groundcheck
     {
         return transform.Find("GroundCheck").GetComponent<GroundCheck>().isGrounded;
@@ -117,16 +120,33 @@ public class PlayerController : MonoBehaviour
         canDash = true;
     }
 
-    private void Fireball()//fireball function
+    //Collision with the enemy
+    private void OnCollisionEnter2D(Collision2D other)
     {
-         if (Input.GetKeyDown(KeyCode.E) && currentFbCooldown <= 0)
+        if (other.gameObject.tag == "Mob")
         {
-            Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
-            currentFbCooldown = fireballCooldown;
-        }
-        currentFbCooldown -= Time.deltaTime;
-    }
+            Enemy enemy = other.gameObject.GetComponent<Enemy>(); //gets enemy ai script
+            if (state == State.falling)
+            {
+                enemy.JumpedOn();
+                Jump();
+            }
+            else
+            {
+                state = State.damaged;
+                if (other.gameObject.transform.position.x > transform.position.x) //pushes player left if enemy is on right
+                {
+                    rb.velocity = new Vector2(-8f, rb.velocity.y);
+                }
+                else //pushes to right if enemy is on left
+                {
+                    rb.velocity = new Vector2(8f, rb.velocity.y);
+                }
+            }
 
+            //destroys the object with tag gameObject;
+        }
+    }
     private void AnimState()//changes animation states of player
     {
         if (state == State.jumping)
@@ -140,6 +160,13 @@ public class PlayerController : MonoBehaviour
         else if (state == State.falling)
         {
             if (isGrounded())
+            {
+                state = State.idle;
+            }
+        }
+        else if (state == State.damaged)
+        {
+            if (Math.Abs(rb.velocity.x) < .1f)
             {
                 state = State.idle;
             }
