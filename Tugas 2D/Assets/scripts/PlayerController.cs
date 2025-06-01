@@ -40,10 +40,11 @@ public class PlayerController : MonoBehaviour
         if (state != State.damaged) //makes it so u  cant move when damaged
         {
             Movement();
+            DashCheck();
         }
      
         
-        DashCheck();
+       
         AnimState();
         anim.SetInteger("state", (int)state);
     }
