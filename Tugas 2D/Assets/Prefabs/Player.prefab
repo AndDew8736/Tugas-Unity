@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 122375262148828931}
   - component: {fileID: 1945820532403836123}
   - component: {fileID: 7398779973956101897}
+  - component: {fileID: -3392235420712206}
   - component: {fileID: 7579522256403927156}
   m_Layer: 0
   m_Name: Player
@@ -321,6 +322,25 @@ MonoBehaviour:
   fireballCooldown: 0.2
   ProjectilePrefab: {fileID: 5084744430982503662, guid: 81e18e3011bfdbc429530185ee36deea, type: 3}
   LaunchOffset: {fileID: 1343928559479802275}
+--- !u!251 &-3392235420712206
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2927858461949087283}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 180
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!95 &7579522256403927156
 Animator:
   serializedVersion: 5
